@@ -59,7 +59,7 @@ app:
     authorizedRedirectUris:
       - https://boarding-house-management-and-rental-website-fe.vercel.app/oauth2/redirect
       - http://localhost:3000/oauth2/redirect
-      - http://localhost:8080/oauth2/callback/google
+      - https://b-house-management-rental-be-production.up.railway.app/oauth2/callback/google
       - myandroidapp://oauth2/redirect
       - myiosapp://oauth2/redirect
 
