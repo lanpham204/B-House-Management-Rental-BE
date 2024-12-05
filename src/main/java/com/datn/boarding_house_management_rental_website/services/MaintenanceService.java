@@ -10,9 +10,9 @@ import java.util.List;
 public interface MaintenanceService {
 	Page<MaintenanceResponse> getAllMaintenance(Long requestId, Integer pageNo, Integer pageSize);
 
-    MessageResponse addNewMaintenance(String maintenanceDate, BigDecimal price, Long requestId, List<MultipartFile> files);
+    MessageResponse addNewMaintenance(String maintenanceDate, BigDecimal price, Long requestId, String file);
 
-    MessageResponse editMaintenance(Long id, String maintenanceDate, BigDecimal price, List<MultipartFile> files);
+    MessageResponse editMaintenance(Long id, String maintenanceDate, BigDecimal price,String file);
 
     MessageResponse deleteMaintenance(Long id);
 

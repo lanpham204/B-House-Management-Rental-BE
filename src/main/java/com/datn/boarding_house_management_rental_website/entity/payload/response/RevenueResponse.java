@@ -10,5 +10,6 @@ import java.math.BigDecimal;
 @Setter
 public class RevenueResponse {
     private Integer month;
+    private Integer year;
     private BigDecimal revenue;
 }

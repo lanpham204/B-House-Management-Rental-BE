@@ -29,14 +29,14 @@ public class MaintenanceController {
 
 	@PostMapping
 	public ResponseEntity<?> addNewMaintenance(@RequestParam String maintenanceDate, @RequestParam BigDecimal price,
-			@RequestParam Long requestId, @RequestParam List<MultipartFile> files) {
-		return ResponseEntity.ok(maintenanceService.addNewMaintenance(maintenanceDate, price, requestId, files));
+			@RequestParam Long requestId, @RequestParam String file) {
+		return ResponseEntity.ok(maintenanceService.addNewMaintenance(maintenanceDate, price, requestId, file));
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<?> editMaintenance(@PathVariable Long id, @RequestParam String maintenanceDate,
-			@RequestParam BigDecimal price, @RequestParam(required = false) List<MultipartFile> files) {
-		return ResponseEntity.ok(maintenanceService.editMaintenance(id, maintenanceDate, price, files));
+			@RequestParam BigDecimal price, @RequestParam(required = false) String file) {
+		return ResponseEntity.ok(maintenanceService.editMaintenance(id, maintenanceDate, price, file));
 	}
 
 	@DeleteMapping("/{id}")

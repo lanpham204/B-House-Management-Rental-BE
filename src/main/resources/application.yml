@@ -10,7 +10,7 @@ spring:
   jpa:
     generate-ddl: true
     defer-datasource-initialization: true
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: update
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy

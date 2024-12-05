@@ -1,5 +1,6 @@
 package com.datn.boarding_house_management_rental_website.services.impl;
 
+import com.datn.boarding_house_management_rental_website.entity.enums.ContractStatus;
 import com.datn.boarding_house_management_rental_website.entity.enums.RoomStatus;
 import com.datn.boarding_house_management_rental_website.entity.models.Contract;
 import com.datn.boarding_house_management_rental_website.entity.models.User;
@@ -22,10 +23,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,8 +48,7 @@ public class StatisticalServiceImpl extends BaseService implements StatisticalSe
 
 	        TotalNumberRequest totalNumberRequest = new TotalNumberRequest();
 	        totalNumberRequest.setNumberOfRoom((int) roomRepository.countAllByUser(user));
-	        totalNumberRequest.setNumberOfEmptyRoom((int) roomRepository.countAllByStatusAndUser(RoomStatus.ROOM_RENT,user) + (int) roomRepository.countAllByStatusAndUser(RoomStatus.CHECKED_OUT,user));
-	        totalNumberRequest.setNumberOfPeople(contractRepository.sumNumOfPeople() == null? 0:contractRepository.sumNumOfPeople().intValue());
+	        totalNumberRequest.setNumberOfPeople(contractRepository.sumNumOfPeople(getUserId()) == null? 0:contractRepository.sumNumOfPeople(getUserId()).intValue());
 	        totalNumberRequest.setRevenue(BigDecimal.valueOf(total));
 	        return totalNumberRequest;
 	    }
@@ -67,41 +65,45 @@ public class StatisticalServiceImpl extends BaseService implements StatisticalSe
 
 	@Override
 	public Page<RevenueResponse> getByMonth() {
-		List<RevenueResponse> list = new ArrayList<>();
-
-		Map<YearMonth, Integer> monthTotalMap = new HashMap<>(); // Sử dụng Map để theo dõi tổng theo từng tháng
+		Map<YearMonth, BigDecimal> monthTotalMap = new HashMap<>();
 
 		for (Contract contract : contractRepository.getAllContract(getUserId())) {
-			LocalDateTime endDate = contract.getCreatedAt().withMonth(12).withDayOfMonth(31);
+			LocalDateTime startDate = contract.getCreatedAt();
+			LocalDateTime endDate = contract.getDeadlineContract();
 
-			YearMonth currentMonth = YearMonth.from(contract.getCreatedAt());
+			if (endDate == null || endDate.isBefore(startDate)) {
+				continue;
+			}
+
+			BigDecimal roomPrice = contract.getRoom().getPrice();
+
+			YearMonth currentMonth = YearMonth.from(startDate);
 			YearMonth endMonth = YearMonth.from(endDate);
 
-			while (currentMonth.isBefore(endMonth) || currentMonth.equals(endMonth)) {
-				int months = (int) currentMonth.until(endMonth, ChronoUnit.MONTHS);
-
-				Integer total = monthTotalMap.get(currentMonth);
-				if (total == null) {
-					total = 0;
-				}
-
-				total += months * contract.getRoom().getPrice().intValue();
-				monthTotalMap.put(currentMonth, total);
-
+			while (!currentMonth.isAfter(endMonth)) {
+				monthTotalMap.merge(
+						currentMonth,
+						roomPrice,
+						BigDecimal::add
+				);
 				currentMonth = currentMonth.plusMonths(1);
 			}
 		}
 
-		for (Map.Entry<YearMonth, Integer> entry : monthTotalMap.entrySet()) {
-			RevenueResponse response = new RevenueResponse();
-			response.setMonth(entry.getKey().getMonthValue());
-			response.setRevenue(BigDecimal.valueOf(entry.getValue()));
-			list.add(response);
-		}
+		List<RevenueResponse> revenueResponses = monthTotalMap.entrySet().stream()
+				.map(entry -> {
+					RevenueResponse response = new RevenueResponse();
+					response.setMonth(entry.getKey().getMonthValue());
+					response.setYear(entry.getKey().getYear());
+					response.setRevenue(entry.getValue());
+					return response;
+				})
+				.sorted(Comparator.comparing(RevenueResponse::getYear)
+						.thenComparing(RevenueResponse::getMonth))
+				.collect(Collectors.toList());
 
-		return new PageImpl<>(list);
+		return new PageImpl<>(revenueResponses);
 	}
-
 	@Override
 	public Page<CostResponse> getByCost() {
 		int total = 0;
@@ -117,7 +119,7 @@ public class StatisticalServiceImpl extends BaseService implements StatisticalSe
 		costResponse1.setCost(BigDecimal.valueOf(total));
 
 		CostResponse costResponse2 = new CostResponse();
-//		costResponse2.setCost(maintenanceRepository.sumPriceOfMaintenance(getUserId()));
+		costResponse2.setCost(maintenanceRepository.sumPriceOfMaintenance(getUserId()));
 		costResponse2.setName("Bảo trì");
 
 		costResponses.add(costResponse1);

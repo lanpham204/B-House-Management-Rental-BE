@@ -120,7 +120,7 @@ public class RoomServiceImpl extends BaseService implements RoomService {
         room.setStatus(roomRequest.getStatus());
         roomRepository.save(room);
 
-        if (Objects.nonNull(roomRequest.getFiles()) && !roomRequest.getFiles().isEmpty()) {	
+        if (!roomRequest.getFiles().isEmpty()) {	
             roomMediaRepository.deleteAllByRoom(room);
             for (String file : roomRequest.getFiles()) {
                 RoomMedia roomMedia = new RoomMedia();

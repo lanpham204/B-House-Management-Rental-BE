@@ -1,5 +1,6 @@
 package com.datn.boarding_house_management_rental_website.entity.payload.response;
 
+import com.datn.boarding_house_management_rental_website.entity.enums.AuthProvider;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,4 +26,6 @@ public class UserResponse {
     private String zaloUrl;
 
     private String facebookUrl;
+
+    private AuthProvider provider;
 }

@@ -114,8 +114,13 @@ public class RoomController {
 			Integer assetNumber = Integer.valueOf(request.getParameterValues("assets[" + i + "][number]")[0]);
 			assets.add(new AssetRequest(assetName, assetNumber));
 		}
-		List<String> files = Arrays.asList(request.getParameter("files").split(","));
-		return new RoomRequest(title, description, price, latitude, longitude, locationId, categoryId,RoomStatus.ROOM_RENT, assets, files);
+		List<String> files = new ArrayList<>();
+		String filesString = request.getParameter("files");
+		if (filesString != null) {
+			files = Arrays.asList(filesString.split(","));
+		}
+		return new RoomRequest(title, description, price, latitude, longitude, locationId, categoryId,
+				RoomStatus.ROOM_RENT, assets, files);
 	}
 
 }

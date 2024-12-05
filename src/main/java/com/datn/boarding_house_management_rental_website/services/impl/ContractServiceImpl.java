@@ -39,7 +39,7 @@ public class ContractServiceImpl extends BaseService implements ContractService 
 
 	@Override
 	public MessageResponse addContract(String name, Long roomId, String nameRentHome, Long numOfPeople, String phone,
-									   String deadline, ContractStatus contractStatus,String createdAt, List<MultipartFile> files) {
+									   String deadline, ContractStatus contractStatus,String createdAt, String file) {
 		Room room = roomRepository.findById(roomId)
 				.orElseThrow(() -> new BadRequestException("Phòng đã không tồn tại"));
 		User user = getUserRepository().findByPhone(phone).orElseThrow(() -> new BadRequestException("User không tồn tại"));
@@ -47,9 +47,8 @@ public class ContractServiceImpl extends BaseService implements ContractService 
 			throw new BadRequestException("Phòng đã bị khóa");
 		}
 		Contract contract;
-		if(files != null) {
-			String file = fileStorageService.storeFile(files.get(0)).replace("photographer/files/", "");
-			contract = new Contract(name, "http://localhost:8080/document/" + file, nameRentHome,
+		if(file != null) {
+				contract = new Contract(name, file, nameRentHome,
 					LocalDateTime.parse(deadline), user.getEmail(), user.getEmail(), numOfPeople,
 					phone,contractStatus,LocalDateTime.parse(createdAt), room, user);
 		} else {
@@ -95,7 +94,7 @@ public class ContractServiceImpl extends BaseService implements ContractService 
 
 	@Override
 	public MessageResponse editContractInfo(Long id, String name, Long roomId, String nameOfRent, Long numOfPeople,
-			String phone, String deadlineContract, ContractStatus contractStatus,String createdAt, List<MultipartFile> files) {
+			String phone, String deadlineContract, ContractStatus contractStatus,String createdAt, String file) {
 		Room room = roomRepository.findById(roomId)
 				.orElseThrow(() -> new BadRequestException("Phòng đã không tồn tại"));
 		User user = getUserRepository().findByPhone(phone).orElseThrow(() -> new BadRequestException("User không tồn tại"));
@@ -109,9 +108,8 @@ public class ContractServiceImpl extends BaseService implements ContractService 
 		contract.setDeadlineContract(LocalDateTime.parse(deadlineContract));
 		contract.setRoom(room);
 		contract.setName(name);
-		if (files != null && Objects.nonNull(files.get(0))) {
-			String file = fileStorageService.storeFile(files.get(0)).replace("photographer/files/", "");
-			contract.setFiles("http://localhost:8080/document/" + file);
+		if (file != null) {
+			contract.setFiles(file);
 		}
 		contract.setNameOfRent(nameOfRent);
 		contract.setNumOfPeople(numOfPeople);

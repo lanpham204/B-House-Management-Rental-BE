@@ -40,28 +40,23 @@ public class MaintenanceServiceImpl extends BaseService implements MaintenanceSe
 	}
 
 	@Override
-	public MessageResponse addNewMaintenance(String maintenanceDate, BigDecimal price, Long requestId,
-			List<MultipartFile> files) {
+	public MessageResponse addNewMaintenance(String maintenanceDate, BigDecimal price, Long requestId, String file) {
 		Request request = requestRepository.findById(requestId)
 				.orElseThrow(() -> new BadRequestException("Phòng đã không tồn tại"));
-		Maintenance maintenance = new Maintenance(LocalDateTime.parse(maintenanceDate), price,
-				"http://localhost:8080/document/"
-						+ fileStorageService.storeFile(files.get(0)).replace("photographer/files/", ""),
-				getUsername(), getUsername(), request);
+		Maintenance maintenance = new Maintenance(LocalDateTime.parse(maintenanceDate), price, file, getUsername(),
+				getUsername(), request);
 		maintenanceRepository.save(maintenance);
 		return MessageResponse.builder().message("Thêm phiếu bảo trì thành công").build();
 	}
 
 	@Override
 	public MessageResponse editMaintenance(Long id, String maintenanceDate, BigDecimal price,
-			List<MultipartFile> files) {
+			String file) {
 		Maintenance maintenance = maintenanceRepository.findById(id)
 				.orElseThrow(() -> new BadRequestException("Phiếu bảo trì không tồn tại"));
 		maintenance.setMaintenanceDate(LocalDateTime.parse(maintenanceDate));
 		maintenance.setPrice(price);
-		if (Objects.nonNull(files)) {
-			String file = "http://localhost:8080/document/"
-					+ fileStorageService.storeFile(files.get(0)).replace("photographer/files/", "");
+		if (Objects.nonNull(file)) {
 			maintenance.setFiles(file);
 		}
 		maintenanceRepository.save(maintenance);
