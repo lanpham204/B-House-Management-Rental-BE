@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:${PROD_DB_URL}
+    url: jdbc:mysql://root:RsyfcrynpjdSShyebNARYGsDOARPFIQi@autorack.proxy.rlwy.net:52696/railway
     username: root
-    password: ${PROD_DB_PASSWORD}
+    password: RsyfcrynpjdSShyebNARYGsDOARPFIQi
   sql:
     init:
       mode: always
