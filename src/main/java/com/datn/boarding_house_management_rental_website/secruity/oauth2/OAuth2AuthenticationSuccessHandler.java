@@ -49,7 +49,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        String redirectUri = "http://localhost:3000/oauth2/redirect";
+        String redirectUri = "https://boarding-house-management-and-rental-website-fe.vercel.app/oauth2/redirect";
 
         if(!isAuthorizedRedirectUri(redirectUri)) {
             throw new BadRequestException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
