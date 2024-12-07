@@ -92,7 +92,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
         user.setIsLocked(false);
         user.setIsConfirmed(false);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        sendEmailConfirmed(signUpRequest.getEmail(),signUpRequest.getName());
+//        sendEmailConfirmed(signUpRequest.getEmail(),signUpRequest.getName());
 
         if (RoleName.ROLE_USER.equals(signUpRequest.getRole())) {
             Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
@@ -238,7 +238,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
 
     public void sendEmailConfirmed(String email,String name) throws MessagingException, IOException, jakarta.mail.MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
-        message.setFrom(new InternetAddress("khanhhn.hoang@gmail.com"));
+        message.setFrom(new InternetAddress("quantriviennhatro@gmail.com"));
         message.setRecipients(MimeMessage.RecipientType.TO, email);
         message.setSubject("Xác thực tài khoản.");
 
