@@ -65,7 +65,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
 
 
     @Override
-    public URI registerAccount(SignUpRequest signUpRequest) throws MessagingException, IOException, jakarta.mail.MessagingException {
+    public MessageResponse registerAccount(SignUpRequest signUpRequest) throws MessagingException, IOException, jakarta.mail.MessagingException {
         if(userRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new BadRequestException("Email đã được sử dụng!!");
         }
@@ -111,11 +111,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
         } else {
             throw new IllegalArgumentException("Bạn không có quyền tạo tài khoản!!!!");
         }
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/user/me")
-                .buildAndExpand(result.getId()).toUri();
-        return location;
+        return MessageResponse.builder().message("Đăng ký tài khoản thành công.").build();
     }
 
     @Override
