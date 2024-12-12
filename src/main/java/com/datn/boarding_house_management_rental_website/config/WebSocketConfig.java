@@ -22,7 +22,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
     	registry.addEndpoint("/ws")
-        .setAllowedOrigins("http://localhost:3000,https://boarding-house-management-and-rental-website-fe.vercel.app") // Cho phép tất cả các origin truy cập WebSocket
+        .setAllowedOrigins("http://localhost:3000,https://boarding-house-management-and-rental-website-fe.vercel.app")
         .withSockJS();
     }
    

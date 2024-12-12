@@ -7,7 +7,6 @@ import com.datn.boarding_house_management_rental_website.services.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.activemq.kaha.impl.index.BadMagicException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.MessagingException;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +28,8 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) throws MessagingException, IOException, jakarta.mail.MessagingException {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(authService.registerAccount(signUpRequest));
+        return ResponseEntity.created(authService.registerAccount(signUpRequest))
+                .body(new ApiResponse(true, "User registered successfully@"));
     }
 
     @PostMapping("/forgot-password")

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.net.URI;
 
 public interface AuthService {
-    MessageResponse registerAccount(SignUpRequest signUpRequest) throws MessagingException, IOException;
+    URI registerAccount(SignUpRequest signUpRequest) throws MessagingException, IOException;
 
     String login(LoginRequest loginRequest);
 

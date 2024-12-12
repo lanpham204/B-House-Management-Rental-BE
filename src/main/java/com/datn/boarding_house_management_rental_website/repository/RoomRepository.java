@@ -39,7 +39,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             "AND (:price IS NULL OR :price = 0 OR r.price = :price) " +
             "AND (:categoryId IS NULL OR :categoryId = 0 OR r.category.id = :categoryId) " +
             "AND (:userId IS NULL OR :userId = 0 OR r.user.id = :userId) " +
-            "AND (:deadLineContract IS NULL OR c IS NULL OR c.deadlineContract < :deadLineContract) " +
+            "AND (:endDate IS NULL OR c IS NULL OR c.endDate < :endDate) " +
             "AND r.isApprove = true " +
             "AND r.isLocked = 'ENABLE' " +
             "AND r.isRemove = false " +
@@ -51,7 +51,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                         @Param("city") String city,
                                         @Param("district") String district,
                                         @Param("ward") String ward,
-                                        @Param("deadLineContract") LocalDateTime deadLineContract,
+                                        @Param("endDate") LocalDate endDate,
                                         Pageable pageable);
     @Query(value = "SELECT r FROM Room r WHERE "+
             " r.isLocked = 'ENABLE' " +

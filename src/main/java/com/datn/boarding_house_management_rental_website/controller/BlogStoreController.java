@@ -9,16 +9,25 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 public class BlogStoreController {
-    private final BlogStoreService blogStoreService;
+	private final BlogStoreService blogStoreService;
 
-    @PostMapping("/blog-store/save")
-    public ResponseEntity<?> saveBlog(@RequestBody BlogStoreRequest storeRequest){
-        return ResponseEntity.ok(blogStoreService.saveBlog(storeRequest));
-    }
+	@GetMapping("/blog-store/save/{roomId}")
+	public ResponseEntity<?> saveBlog(@PathVariable Long roomId) {
+		return ResponseEntity.ok(blogStoreService.saveBlog(roomId));
+	}
 
-    @GetMapping("/blog-store/all")
-    public ResponseEntity<?> getAllBlog(@RequestParam Integer pageNo,
-                                        @RequestParam Integer pageSize) {
-        return ResponseEntity.ok(blogStoreService.getPageOfBlog(pageNo, pageSize));
-    }
+	@DeleteMapping("/blog-store/delete/{roomId}")
+	public ResponseEntity<?> deleteBlog(@PathVariable Long roomId) {
+		return ResponseEntity.ok(blogStoreService.deleteBlog(roomId));
+	}
+
+	@GetMapping("/blog-store/check/{roomId}")
+	public ResponseEntity<?> checkBlog(@PathVariable Long roomId) {
+		return ResponseEntity.ok(blogStoreService.checkBlog(roomId));
+	}
+
+	@GetMapping("/blog-store/all")
+	public ResponseEntity<?> getAllBlog(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
+		return ResponseEntity.ok(blogStoreService.getPageOfBlog(pageNo, pageSize));
+	}
 }

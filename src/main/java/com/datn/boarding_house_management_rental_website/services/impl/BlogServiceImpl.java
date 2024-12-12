@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -28,9 +29,9 @@ public class BlogServiceImpl implements BlogService {
     }
 
 
-    public Page<RoomResponse> getAllRoomForCustomer(String title, BigDecimal price, Long categoryId, String city, String district, String ward, LocalDateTime deadLineContract, Integer pageNo, Integer pageSize) {
+    public Page<RoomResponse> getAllRoomForCustomer(String title, BigDecimal price, Long categoryId, String city, String district, String ward, LocalDate to, Integer pageNo, Integer pageSize) {
         int page = pageNo == 0 ? pageNo : pageNo - 1;
         Pageable pageable = PageRequest.of(page, pageSize);
-        return mapperUtils.convertToResponsePage(roomRepository.searchingRoomForCustomer(title,price,categoryId,null,city,district,ward,deadLineContract,pageable),RoomResponse.class,pageable);
+        return mapperUtils.convertToResponsePage(roomRepository.searchingRoomForCustomer(title,price,categoryId,null,city,district,ward,to,pageable),RoomResponse.class,pageable);
     }
 }

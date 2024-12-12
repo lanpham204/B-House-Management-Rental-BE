@@ -7,45 +7,54 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "contract")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Contract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String files;
-    @Column(name = "name_of_rent")
-    private String nameOfRent;
-    @Column(name = "deadline_contract")
-    private LocalDateTime deadlineContract;
-    @Column(name = "created_by")
-    private String createdBy;
-
-    @Column(name = "updated_by")
-    private String updatedBy;
-
-    @Column(name = "num_of_people")
-    private Long numOfPeople;
-
-    private String phone;
+    private String file;
+    private LocalDate endDate;
+    private LocalDate startDate;
+    @CreatedBy
+    @Column(nullable = false, updatable = false)
+    private Long createdBy;
+    @LastModifiedBy
+    @Column(insertable = false)
+    private Long updatedBy;
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+    @LastModifiedDate
+    @Column(insertable = false)
+    private LocalDateTime updatedAt;
+    @Column(nullable = false)
+    private Integer numberOfRent;
     @Enumerated(EnumType.STRING)
     private ContractStatus status;
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
     @ManyToOne
     @JoinColumn(name = "room_id")
     @JsonManagedReference
@@ -53,20 +62,4 @@ public class Contract {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-	public Contract(String name, String files, String nameOfRent, LocalDateTime deadlineContract, String createdBy,
-			String updatedBy, Long numOfPeople, String phone,ContractStatus contractStatus,LocalDateTime createdAt, Room room, User user) {
-		super();
-		this.name = name;
-		this.files = files;
-		this.nameOfRent = nameOfRent;
-		this.deadlineContract = deadlineContract;
-		this.createdBy = createdBy;
-		this.updatedBy = updatedBy;
-		this.numOfPeople = numOfPeople;
-        this.status = contractStatus;
-        this.createdAt = createdAt;
-		this.phone = phone;
-		this.room = room;
-		this.user = user;
-	}
-}
+    }

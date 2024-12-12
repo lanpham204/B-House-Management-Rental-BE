@@ -119,7 +119,7 @@ public class AccountServiceImpl implements AccountService {
         String htmlTemplate = readFile("send-email.html");
 
         // Replace placeholders in the HTML template with dynamic values
-        htmlTemplate = htmlTemplate.replace("NAME", sendEmailRequest.getNameOfRentaler());
+        htmlTemplate = htmlTemplate.replace("NAM NGHIEM", sendEmailRequest.getNameOfRentaler());
         htmlTemplate = htmlTemplate.replace("DESCRIPTION", sendEmailRequest.getDescription());
         User user = userRepository.findByEmail(sendEmailRequest.getTitle()).orElseThrow(() -> new BadRequestException("Tài khoản không tồn tại"));
         htmlTemplate = htmlTemplate.replace("EMAIL", sendEmailRequest.getTitle());
@@ -141,7 +141,7 @@ public class AccountServiceImpl implements AccountService {
         String htmlTemplate = readFile("send-email.html");
 
         // Replace placeholders in the HTML template with dynamic values
-        htmlTemplate = htmlTemplate.replace("NAME", sendEmailRequest.getNameOfRentaler());
+        htmlTemplate = htmlTemplate.replace("NAM NGHIEM", sendEmailRequest.getNameOfRentaler());
         htmlTemplate = htmlTemplate.replace("DESCRIPTION", sendEmailRequest.getDescription() );
 
         // Set the email's content to be the HTML template

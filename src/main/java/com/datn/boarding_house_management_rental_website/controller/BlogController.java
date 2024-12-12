@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @RestController
@@ -30,13 +31,13 @@ public class BlogController {
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String district,
             @RequestParam(required = false) String ward,
-            @RequestParam(required = false) String deadLineContract,
+            @RequestParam(required = false) String end,
             @RequestParam Integer pageNo,
             @RequestParam Integer pageSize
     ){
 
         return ResponseEntity.ok(blogService.getAllRoomForCustomer(title, price,categoryId,city,
-                district,ward,deadLineContract.equals("null")  ? null:LocalDateTime.parse(deadLineContract), pageNo, pageSize));
+                district,ward,end==null	  ? null:LocalDate.parse(end), pageNo, pageSize));
     }
 
 }

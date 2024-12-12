@@ -65,7 +65,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
 
 
     @Override
-    public MessageResponse registerAccount(SignUpRequest signUpRequest) throws MessagingException, IOException, jakarta.mail.MessagingException {
+    public URI registerAccount(SignUpRequest signUpRequest) throws MessagingException, IOException, jakarta.mail.MessagingException {
         if(userRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new BadRequestException("Email đã được sử dụng!!");
         }
@@ -92,7 +92,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
         user.setIsLocked(false);
         user.setIsConfirmed(false);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        sendEmailConfirmed(signUpRequest.getEmail(),signUpRequest.getName());
+        sendEmailConfirmed(signUpRequest.getEmail(),signUpRequest.getName());
 
         if (RoleName.ROLE_USER.equals(signUpRequest.getRole())) {
             Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
@@ -111,7 +111,11 @@ public class AuthServiceImpl extends BaseService implements AuthService {
         } else {
             throw new IllegalArgumentException("Bạn không có quyền tạo tài khoản!!!!");
         }
-        return MessageResponse.builder().message("Đăng ký tài khoản thành công.").build();
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path("/user/me")
+                .buildAndExpand(result.getId()).toUri();
+        return location;
     }
 
     @Override
@@ -238,7 +242,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
 
     public void sendEmailConfirmed(String email,String name) throws MessagingException, IOException, jakarta.mail.MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
-        message.setFrom(new InternetAddress("quantriviennhatro@gmail.com"));
+        message.setFrom(new InternetAddress("khanhhn.hoang@gmail.com"));
         message.setRecipients(MimeMessage.RecipientType.TO, email);
         message.setSubject("Xác thực tài khoản.");
 

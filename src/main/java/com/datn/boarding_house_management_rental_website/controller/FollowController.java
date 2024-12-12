@@ -1,6 +1,5 @@
 package com.datn.boarding_house_management_rental_website.controller;
 
-import com.datn.boarding_house_management_rental_website.entity.payload.request.FollowRequest;
 import com.datn.boarding_house_management_rental_website.services.FollowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +12,19 @@ public class FollowController {
 
     private final FollowService followService;
 
-    @PostMapping
-    public ResponseEntity<?> followAgents(@RequestBody FollowRequest followRequest){
-        return ResponseEntity.ok(followService.addFollow(followRequest));
+    @GetMapping("{userId}")
+    public ResponseEntity<?> followAgents(@PathVariable Long userId){
+        return ResponseEntity.ok(followService.addFollow(userId));
     }
+
+	@DeleteMapping("{userId}")
+	public ResponseEntity<?> unFollowAgents(@PathVariable Long userId) {
+		return ResponseEntity.ok(followService.deleteFollow(userId));
+	}
+	@GetMapping("check/{userId}")
+	public ResponseEntity<?> checkFollowAgents(@PathVariable Long userId) {
+		return ResponseEntity.ok(followService.checkFollow(userId));
+	}
 
     @GetMapping
     public ResponseEntity<?> getAllAgents(@RequestParam Integer pageNo,

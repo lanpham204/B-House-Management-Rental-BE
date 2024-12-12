@@ -14,7 +14,8 @@ import java.util.Optional;
 
 public interface BlogStoreRepository extends JpaRepository<BlogStore, Long> {
     Optional<BlogStore> findByRoomAndUser(Room room, User user);
-
+    void deleteByUserIdAndRoomId(Long userId, Long roomId);
+    Optional<BlogStore> findByUserIdAndRoomId(Long userId, Long roomId);
     @Query(value = "SELECT bs FROM BlogStore bs WHERE (:userId IS NULL OR :userId = 0 OR bs.user.id = :userId)")
     Page<BlogStore> getPageOfBlogStore(@Param("userId") Long userId, Pageable pageable);
 }

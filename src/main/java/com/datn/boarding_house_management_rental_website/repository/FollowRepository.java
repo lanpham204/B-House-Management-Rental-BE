@@ -14,7 +14,8 @@ import java.util.Optional;
 public interface FollowRepository extends JpaRepository<Follow, Long>  {
     Optional<Follow> findByCustomerAndRentaler(User customer, User rentaler);
     List<Follow> findByRentalerId(Long id);
-
+    void deleteByCustomerIdAndRentalerId(Long customerId, Long rentalerId);
+    Optional<Follow> findByCustomerIdAndRentalerId(Long customerId, Long rentalerId);
     @Query(value = "SELECT f FROM Follow f WHERE (:userId IS NULL OR :userId = 0 OR f.customer.id = :userId)")
     Page<Follow> getPageFollow(@Param("userId") Long userId, Pageable pageable);
     Long countByRentalerId(Long id);

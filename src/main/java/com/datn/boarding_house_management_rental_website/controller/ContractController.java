@@ -1,14 +1,12 @@
 package com.datn.boarding_house_management_rental_website.controller;
 
 import com.datn.boarding_house_management_rental_website.entity.enums.ContractStatus;
+import com.datn.boarding_house_management_rental_website.entity.payload.response.MessageResponse;
 import com.datn.boarding_house_management_rental_website.services.ContractService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/contract")
@@ -16,20 +14,33 @@ import java.util.List;
 public class ContractController {
 	private final ContractService contractService;
 
-	@PostMapping
-	private ResponseEntity<?> addContract(@RequestParam String name, @RequestParam Long roomId,
-			@RequestParam String nameOfRent, @RequestParam Long numOfPeople, @RequestParam String phone,
-			@RequestParam String deadlineContract, @RequestParam ContractStatus contractStatus,
-			@RequestParam String createdAt, @RequestParam(required = false) String file) {
-		return ResponseEntity.ok(contractService.addContract(name, roomId, nameOfRent, numOfPeople, phone,
-				deadlineContract, contractStatus, createdAt, file));
+	@PostMapping("request")
+	private ResponseEntity<?> requestContract(@RequestParam Long roomId, @RequestParam Integer numberOfRent,
+			@RequestParam Integer numberOfMonth, @RequestParam LocalDate startDate, @RequestParam ContractStatus status,
+			@RequestParam(required = false) String fileUrl) {
+		try {
+			MessageResponse messageResponse = contractService.requestContract(roomId, numberOfRent, numberOfMonth,
+					startDate, status, fileUrl);
+			return ResponseEntity.ok(messageResponse);
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+		}
 	}
 
+	@PostMapping
+	public ResponseEntity<?> createContract(@RequestParam String name, @RequestParam Long roomId, @RequestParam String phone, @RequestParam Integer numberOfRent, @RequestParam LocalDate startDate, @RequestParam LocalDate endDate, @RequestParam ContractStatus contractStatus, @RequestParam(required = false) String file) {
+		try {
+			MessageResponse messageResponse = contractService.createContract(name, roomId, phone, numberOfRent, startDate, endDate, contractStatus, file);
+			return ResponseEntity.ok(messageResponse);
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+		}
+	}
 	@GetMapping
 	private ResponseEntity<?> getAllContract(@RequestParam(required = false) String name,
 			@RequestParam(required = false) String phone, @RequestParam(required = false) ContractStatus status,
-			@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
-		return ResponseEntity.ok(contractService.getAllContractOfRentaler(name, phone, status, pageNo, pageSize));
+			@RequestParam Integer pageNo, @RequestParam Integer pageSize, @RequestParam(required = false) boolean not) {
+		return ResponseEntity.ok(contractService.getAllContractOfRentaler(name, phone, status, pageNo, pageSize, not));
 	}
 
 	@GetMapping("/customer")
@@ -45,11 +56,15 @@ public class ContractController {
 
 	@PutMapping("/{id}")
 	private ResponseEntity<?> updateContractInfo(@PathVariable Long id, @RequestParam String name,
-			@RequestParam Long roomId, @RequestParam String nameOfRent, @RequestParam Long numOfPeople,
-			@RequestParam String phone, @RequestParam String deadlineContract, @RequestParam String createdAt,
-			@RequestParam ContractStatus contractStatus, @RequestParam(required = false) String file) {
-		return ResponseEntity.ok(contractService.editContractInfo(id, name, roomId, nameOfRent, numOfPeople, phone,
-				deadlineContract, contractStatus, createdAt, file));
+			@RequestParam Integer numberOfRent, @RequestParam LocalDate startDate, @RequestParam LocalDate endDate,
+			@RequestParam ContractStatus status, @RequestParam(required = false) String file) {
+		try {
+			MessageResponse message = contractService.updateContract(id, name, numberOfRent, startDate, endDate, status,
+					file);
+			return ResponseEntity.ok(message);
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+		}
 	}
 
 	@DeleteMapping("/{id}")

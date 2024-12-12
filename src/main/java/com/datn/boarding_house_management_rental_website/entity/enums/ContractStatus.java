@@ -2,8 +2,8 @@ package com.datn.boarding_house_management_rental_website.entity.enums;
 
 public enum ContractStatus {
     REQUEST("REQUEST"),
-    ROOM_RENT("ROOM_RENT"),
-    RESERVATION("RESERVATION"),
+    RENT("RENT"),
+    BOOKING("BOOKING"),
     CHECKOUT("CHECKOUT");
 
 

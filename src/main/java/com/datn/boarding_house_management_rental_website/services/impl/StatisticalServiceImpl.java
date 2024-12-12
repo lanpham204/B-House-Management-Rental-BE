@@ -38,17 +38,16 @@ public class StatisticalServiceImpl extends BaseService implements StatisticalSe
 	 @Override
 	    public TotalNumberRequest getNumberOfRentalerForStatistical() {
 	        User user = userRepository.findById(getUserId()).orElseThrow(() -> new BadRequestException("Tài khoản không tồn tại"));
-	        int total = 0;
-	        for (Contract contract : contractRepository.getAllContract(getUserId())) {
-	            Duration duration = Duration.between(contract.getCreatedAt(), contract.getDeadlineContract());
-	            long months = duration.toMinutes() / (60 * 24 * 30);
-	            total += months * contract.getRoom().getPrice().intValue();
-	        }
-
+		 int total = 0;
+		 for (Contract contract : contractRepository.getAllContract(getUserId())) {
+			 Period period = Period.between(contract.getStartDate(), contract.getEndDate());
+			 long months = period.toTotalMonths();
+			 total += months * contract.getRoom().getPrice().intValue();
+		 }
 
 	        TotalNumberRequest totalNumberRequest = new TotalNumberRequest();
 	        totalNumberRequest.setNumberOfRoom((int) roomRepository.countAllByUser(user));
-	        totalNumberRequest.setNumberOfPeople(contractRepository.sumNumOfPeople(getUserId()) == null? 0:contractRepository.sumNumOfPeople(getUserId()).intValue());
+	        totalNumberRequest.setNumberOfPeople(contractRepository.sumNumOfPeople((getUserId())) == null? 0:contractRepository.sumNumOfPeople(getUserId()).intValue());
 	        totalNumberRequest.setRevenue(BigDecimal.valueOf(total));
 	        return totalNumberRequest;
 	    }
@@ -67,9 +66,9 @@ public class StatisticalServiceImpl extends BaseService implements StatisticalSe
 	public Page<RevenueResponse> getByMonth() {
 		Map<YearMonth, BigDecimal> monthTotalMap = new HashMap<>();
 
-		for (Contract contract : contractRepository.getAllContract(getUserId())) {
-			LocalDateTime startDate = contract.getCreatedAt();
-			LocalDateTime endDate = contract.getDeadlineContract();
+		for (Contract contract : contractRepository.getAllContractByStatus(getUserId())) {
+			LocalDate startDate = contract.getStartDate();
+			LocalDate endDate = contract.getEndDate();
 
 			if (endDate == null || endDate.isBefore(startDate)) {
 				continue;
@@ -108,8 +107,8 @@ public class StatisticalServiceImpl extends BaseService implements StatisticalSe
 	public Page<CostResponse> getByCost() {
 		int total = 0;
 		for (Contract contract : contractRepository.getAllContract(getUserId())) {
-			Duration duration = Duration.between(contract.getCreatedAt(), contract.getDeadlineContract());
-			long months = duration.toMinutes() / (60 * 24 * 30);
+			Period period = Period.between(contract.getStartDate(), contract.getEndDate());
+			long months = period.toTotalMonths();
 			total += months * contract.getRoom().getPrice().intValue();
 		}
 

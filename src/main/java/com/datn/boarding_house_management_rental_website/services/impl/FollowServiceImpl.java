@@ -3,6 +3,7 @@ package com.datn.boarding_house_management_rental_website.services.impl;
 import com.datn.boarding_house_management_rental_website.entity.models.Follow;
 import com.datn.boarding_house_management_rental_website.entity.models.User;
 import com.datn.boarding_house_management_rental_website.entity.payload.request.FollowRequest;
+import com.datn.boarding_house_management_rental_website.entity.payload.response.CheckResponse;
 import com.datn.boarding_house_management_rental_website.entity.payload.response.FollowResponse;
 import com.datn.boarding_house_management_rental_website.entity.payload.response.MessageResponse;
 import com.datn.boarding_house_management_rental_website.exception.BadRequestException;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,9 +32,9 @@ public class FollowServiceImpl extends BaseService implements FollowService {
     private final MapperUtils mapperUtils;
 
     @Override
-    public MessageResponse addFollow(FollowRequest followRequest) {
+    public CheckResponse addFollow(Long id) {
         User customer = userRepository.findById(getUserId()).orElseThrow(() -> new BadRequestException("Tài khoảng không tồn tại"));
-        User rentaler = userRepository.findById(followRequest.getRentalerId()).orElseThrow(() -> new BadRequestException("Tài khoảng không tồn tại"));
+        User rentaler = userRepository.findById(id).orElseThrow(() -> new BadRequestException("Tài khoảng không tồn tại"));
         Optional<Follow> followOptional = followRepository.findByCustomerAndRentaler(customer, rentaler);
         if (followOptional.isPresent()) {
             throw new BadRequestException("Người cho thuê đã được theo dõi.");
@@ -41,7 +43,7 @@ public class FollowServiceImpl extends BaseService implements FollowService {
         follow.setCustomer(customer);
         follow.setRentaler(rentaler);
         followRepository.save(follow);
-        return MessageResponse.builder().message("Đã theo dõi.").build();
+        return new CheckResponse(true);
     }
 
     @Override
@@ -63,5 +65,22 @@ public class FollowServiceImpl extends BaseService implements FollowService {
 	@Override
 	public Long countFollower() {
 			return followRepository.countByRentalerId(getUserId());
+	}
+
+	@Override
+	@Transactional
+	public CheckResponse deleteFollow(Long id) {
+		Long customerId=getUserId();
+		followRepository.deleteByCustomerIdAndRentalerId(customerId, id);
+		return new CheckResponse(true);
+	}
+
+	@Override
+	public CheckResponse checkFollow(Long id) {
+		Long customerId=getUserId();
+		Optional<Follow> follow = followRepository.findByCustomerIdAndRentalerId(customerId, id);
+		if(follow.isPresent()){
+			return new CheckResponse(true);
+		}return new CheckResponse(false);
 	}
 }

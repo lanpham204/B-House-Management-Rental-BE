@@ -5,6 +5,7 @@ import com.datn.boarding_house_management_rental_website.entity.enums.ContractSt
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,13 +13,11 @@ import java.time.LocalDateTime;
 public class ContractResponse {
     private Long id;
     private String name;
-    private String files;
-    private String nameOfRent;
-    private LocalDateTime deadlineContract;
+    private String file;
+    private LocalDate startDate;
     private RoomResponse room;
-    private LocalDateTime createdAt;
+    private UserResponse user;
+    private LocalDate endDate;
     private ContractStatus status;
-    private String phone;
-    private Long numOfPeople;
-
+    private Integer numberOfRent;
 }
