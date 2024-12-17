@@ -101,9 +101,11 @@ public class AccountServiceImpl implements AccountService {
         String htmlTemplate = readFile("send-email.html");
 
         // Replace placeholders in the HTML template with dynamic values
-        htmlTemplate = htmlTemplate.replace("NAM NGHIEM", sendEmailRequest.getNameOfRentaler());
+        htmlTemplate = htmlTemplate.replace("NAME", sendEmailRequest.getNameOfRentaler());
         htmlTemplate = htmlTemplate.replace("DESCRIPTION", sendEmailRequest.getDescription());
-
+        User user = userRepository.findByEmail(sendEmailRequest.getTitle()).orElseThrow(() -> new BadRequestException("Tài khoản không tồn tại"));
+        htmlTemplate = htmlTemplate.replace("EMAIL", sendEmailRequest.getTitle());
+        htmlTemplate = htmlTemplate.replace("PHONE",  user.getPhone());
         // Set the email's content to be the HTML template
         message.setContent(htmlTemplate, "text/html; charset=utf-8");
 
@@ -119,7 +121,7 @@ public class AccountServiceImpl implements AccountService {
         String htmlTemplate = readFile("send-email.html");
 
         // Replace placeholders in the HTML template with dynamic values
-        htmlTemplate = htmlTemplate.replace("NAM NGHIEM", sendEmailRequest.getNameOfRentaler());
+        htmlTemplate = htmlTemplate.replace("NAME", sendEmailRequest.getNameOfRentaler());
         htmlTemplate = htmlTemplate.replace("DESCRIPTION", sendEmailRequest.getDescription());
         User user = userRepository.findByEmail(sendEmailRequest.getTitle()).orElseThrow(() -> new BadRequestException("Tài khoản không tồn tại"));
         htmlTemplate = htmlTemplate.replace("EMAIL", sendEmailRequest.getTitle());
@@ -141,9 +143,11 @@ public class AccountServiceImpl implements AccountService {
         String htmlTemplate = readFile("send-email.html");
 
         // Replace placeholders in the HTML template with dynamic values
-        htmlTemplate = htmlTemplate.replace("NAM NGHIEM", sendEmailRequest.getNameOfRentaler());
+        htmlTemplate = htmlTemplate.replace("NAME", sendEmailRequest.getNameOfRentaler());
         htmlTemplate = htmlTemplate.replace("DESCRIPTION", sendEmailRequest.getDescription() );
-
+        User user = userRepository.findByEmail(sendEmailRequest.getTitle()).orElseThrow(() -> new BadRequestException("Tài khoản không tồn tại"));
+        htmlTemplate = htmlTemplate.replace("EMAIL", sendEmailRequest.getTitle());
+        htmlTemplate = htmlTemplate.replace("PHONE",  user.getPhone());
         // Set the email's content to be the HTML template
         message.setContent(htmlTemplate, "text/html; charset=utf-8");
 

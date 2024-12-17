@@ -225,7 +225,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
     public void sendEmailFromTemplate(String email) throws MessagingException, IOException, jakarta.mail.MessagingException {
 
         MimeMessage message = mailSender.createMimeMessage();
-        message.setFrom(new InternetAddress("phamngoclansr123@gmail.com"));
+        message.setFrom(new InternetAddress("ngominhhieu2004pt@gmail.com"));
         message.setRecipients(MimeMessage.RecipientType.TO, email);
         message.setSubject("Yêu cầu cấp lại mật khẩu!!!");
 
@@ -242,7 +242,7 @@ public class AuthServiceImpl extends BaseService implements AuthService {
 
     public void sendEmailConfirmed(String email,String name) throws MessagingException, IOException, jakarta.mail.MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
-        message.setFrom(new InternetAddress("khanhhn.hoang@gmail.com"));
+        message.setFrom(new InternetAddress("quantriviennhatro@gmail.com"));
         message.setRecipients(MimeMessage.RecipientType.TO, email);
         message.setSubject("Xác thực tài khoản.");
 

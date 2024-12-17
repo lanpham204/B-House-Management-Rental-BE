@@ -58,7 +58,7 @@ public class StatisticalServiceImpl extends BaseService implements StatisticalSe
 		totalNumberResponse.setNumberOfAccount((int) userRepository.count());
 		totalNumberResponse.setNumberOfApprove((int) roomRepository.countByIsApprove(true));
 		totalNumberResponse.setNumberOfApproving((int) roomRepository.countByIsApprove(false));
-		totalNumberResponse.setNumberOfAccountLocked((int) roomRepository.count());
+		totalNumberResponse.setNumberOfRoom((int) roomRepository.count());
 		return totalNumberResponse;
 	}
 

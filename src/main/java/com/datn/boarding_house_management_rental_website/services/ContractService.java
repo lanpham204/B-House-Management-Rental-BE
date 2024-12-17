@@ -14,8 +14,10 @@ import java.util.List;
 public interface ContractService {
 	MessageResponse createContract(String name, Long roomId, String phone, Integer numberOfRent,
 			LocalDate startDate, LocalDate endDate, ContractStatus contractStatus, String file);
-	MessageResponse requestContract(Long roomId, Integer numberOfRent, Integer numberOfMonth, LocalDate startDate, ContractStatus contractStatus, String fileUrl);
-	MessageResponse updateContract(Long contractId, String name,Integer numberOfRent, LocalDate startDate, LocalDate endDate, ContractStatus contractStatus, String fileUrl);
+	MessageResponse requestContract(Long roomId, Integer numberOfRent, Integer numberOfMonth, LocalDate startDate,
+									ContractStatus contractStatus, String fileUrl);
+	MessageResponse updateContract(Long contractId, String name,Integer numberOfRent, LocalDate startDate,
+								   LocalDate endDate, ContractStatus contractStatus, String fileUrl);
 
 	MessageResponse deleteContract(Long id);
 

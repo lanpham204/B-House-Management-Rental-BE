@@ -45,32 +45,6 @@ public class MessageController {
 	@Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-	@GetMapping("/send")
-	public Message testSendMessage() {
-//		String email1 = "giangnam.trunghoccoso@gmail.com", email2 = "giangnam.trunghocphothong@gmail.com";
-//		messageServiceImpl.Producer(email1, email2);
-//		messageServiceImpl.Consumer(email1, email2);
-//		User sender = userRepository.findByEmail(email1).get();
-//		User receiver = userRepository.findByEmail(email2).get();
-//		Message message = messageRepository.findBySenderAndReceiver(sender, receiver);
-//		System.out.println(message.getId());
-//		List <MessageChat> messageChats = message.getContent();
-//		if (!(messageChats != null)) messageChats = new ArrayList<>();
-//		MessageChat messageChat = new MessageChat();
-//		messageChat.setContent("test tinh nang!!!");
-//		messageChat.setMessage(message);
-//		messageChat.setRead(false);
-//		messageChat.setSendBy(true);
-//		messageChat.setSentAt(new Date());
-//		messageChats.add(messageChat);
-//		messageChatRepository.save(messageChat);
-//		message.setContent(messageChats);
-//		
-//		messageRepository.save(message);
-		//return "success";
-		return userServiceImpl.getMessageChatUser(Long.valueOf(1), Long.valueOf(2));
-	}
-
 	@GetMapping("/user/message")
 	@PreAuthorize("hasRole('USER') or hasRole('RENTALER')")
     public List<MessageDTO> getMessageUser() {
@@ -78,13 +52,11 @@ public class MessageController {
     }
 	
 	@GetMapping("/user/message/{userName}")
-//	@PreAuthorize("hasRole('USER') or hasRole('RENTALER')")
-    public List<User> findMessageUser(@CurrentUser UserPrincipal userPrincipal, @PathVariable String userName) {
+    public List<User> findMessageUser(@PathVariable String userName) {
         return userServiceImpl.findMessageUser(userName);
     }
 	
 	@GetMapping("/user/message-chat/{userId}")
-//	@PreAuthorize("hasRole('USER') or hasRole('RENTALER')")
     public Message getMessageChatUser(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long userId) {
 		return userServiceImpl.getMessageChatUser(userPrincipal.getId(), userId);
     }
@@ -96,7 +68,6 @@ public class MessageController {
 		System.out.println("Current user: " + user);
 		System.out.println("User: " + userId);
 		String result = userServiceImpl.addChatUser(user,userId, messageChat);
-		//String path = "/" + userId.toString() + "/queue/chat";
 		if (result.equals("Gửi tin nhắn thành công!!!")) {
 			try {
 				messagingTemplate.convertAndSend("/queue/messages", result);
@@ -108,6 +79,5 @@ public class MessageController {
 		}
 		String path = user.toString() + " " + userId.toString();
 		return path;
-        //return new ResponseEntity<String>(result, result.equals("Gửi tin nhắn thành công!!!") ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 }

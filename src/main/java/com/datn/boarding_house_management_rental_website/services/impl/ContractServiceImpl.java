@@ -149,9 +149,7 @@ public class ContractServiceImpl extends BaseService implements ContractService 
 		if (!list.isEmpty()) {
 			Contract contract = list.get(0);
 			if (!contract.getId().equals(contractId)) {
-				System.out.println(contract.toString());
-				if ((startDate.isBefore(contract.getStartDate()) && endDate.isAfter(contract.getEndDate()))
-						|| (startDate.isBefore(contract.getStartDate()) && endDate.isAfter(contract.getEndDate()))) {
+				if ((startDate.isBefore(contract.getStartDate()) && endDate.isAfter(contract.getEndDate()))) {
 					throw new BadRequestException(
 							"Thời hạn hợp đồng không hợp lệ, ngày kết thúc của bạn phải trước ngày: %s"
 									.formatted(contract.getStartDate()));
